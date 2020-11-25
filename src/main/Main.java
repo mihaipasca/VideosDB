@@ -6,6 +6,7 @@ import common.Constants;
 import fileio.Input;
 import fileio.InputLoader;
 import fileio.Writer;
+import process.ProcessInput;
 import org.json.simple.JSONArray;
 
 import java.io.File;
@@ -68,10 +69,12 @@ public final class Main {
         Input input = inputLoader.readData();
 
         Writer fileWriter = new Writer(filePath2);
-        JSONArray arrayResult = new JSONArray();
+        JSONArray arrayResult;
 
         //TODO add here the entry point to your implementation
-
+        // Repo repository = new Repo(input);
+        arrayResult = ProcessInput.process(input, fileWriter);
+        // System.out.println(arrayResult);
         fileWriter.closeJSON(arrayResult);
     }
 }
