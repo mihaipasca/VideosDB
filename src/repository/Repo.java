@@ -4,6 +4,7 @@ package repository;
 import java.util.ArrayList;
 import java.util.List;
 
+import entertainment.Show;
 import fileio.*;
 import actor.Actor;
 import user.User;
@@ -15,6 +16,7 @@ public class Repo {
     private List<User> userList = new ArrayList<>();
     private List<Movie> movieList = new ArrayList<>();
     private List<Serial> serialList = new ArrayList<>();
+    private List<Show> showList = new ArrayList<>();
 
     public Repo(Input input) {
         for (ActorInputData actorInput : input.getActors()) {
@@ -33,6 +35,8 @@ public class Repo {
             Serial serial = new Serial(serialInput);
             serialList.add(serial);
         }
+        showList.addAll(movieList);
+        showList.addAll(serialList);
     }
 
     public Actor getActor(final String name) {
@@ -50,6 +54,14 @@ public class Repo {
         for (User user : userList) {
             if (username.equals(user.getUsername())) {
                 return user;
+            }
+        }
+        return null;
+    }
+    public Show getShow(final String title) {
+        for (Show show : showList) {
+            if (title.equals(show.getTitle())) {
+                return show;
             }
         }
         return null;
@@ -73,5 +85,25 @@ public class Repo {
 
     public void setSerialList(final List<Serial> serialList) {
         this.serialList = serialList;
+    }
+
+    public List<Actor> getActorList() {
+        return actorList;
+    }
+
+    public void setActorList(List<Actor> actorList) {
+        this.actorList = actorList;
+    }
+
+    public List<User> getUserList() {
+        return userList;
+    }
+
+    public List<Show> getShowList() {
+        return showList;
+    }
+
+    public void setShowList(List<Show> showList) {
+        this.showList = showList;
     }
 }

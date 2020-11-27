@@ -1,6 +1,7 @@
 package actions;
 
 
+import common.Constants;
 import entertainment.Movie;
 import entertainment.Season;
 import entertainment.Serial;
@@ -8,19 +9,29 @@ import fileio.ActionInputData;
 import repository.Repo;
 import user.User;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public final class Command {
 
+
+    private Command() {
+
+    }
+
+    /**
+     *
+     * @param repository with the input data
+     * @param command to be executed
+     * @return String with the result of the command
+     */
     public static String execute(final Repo repository, final ActionInputData command) {
         String result;
         switch (command.getType()) {
-            case "favorite" -> result = favorite(repository, command);
-            case "view" -> result = view(repository, command);
-            case "rating" -> result = rating(repository, command);
+            case Constants.FAVORITE -> result = favorite(repository, command);
+            case Constants.VIEW -> result = view(repository, command);
+            case Constants.RATING -> result = rating(repository, command);
             default -> result = "error -> invalid command";
         }
         return result;
@@ -40,13 +51,18 @@ public final class Command {
                 }
                 ArrayList<String> favoriteList = user.getFavoriteMovies();
                 favoriteList.add(command.getTitle());
-                user.setFavoriteMovies(favoriteList);
                 return "success -> " + command.getTitle() + " was added as favourite";
             }
         }
         return "error -> " + command.getTitle() + " is not seen";
     }
 
+    /**
+     *
+     * @param repository with all the data
+     * @param command to be executed
+     * @return String with the result of the view command
+     */
     private static String view(final Repo repository, final ActionInputData command) {
         int viewsNumber = 1;
         User user = repository.getUser(command.getUsername());
@@ -61,11 +77,16 @@ public final class Command {
         }
         Map<String, Integer> historyList = user.getHistory();
         historyList.put(command.getTitle(), viewsNumber);
-        user.setHistory(historyList);
         return "success -> " + command.getTitle() + " was viewed with total views of "
                 + viewsNumber;
     }
 
+    /**
+     *
+     * @param repository with all the data
+     * @param command to be executed
+     * @return String with the result of the rating command
+     */
     private static String rating(final Repo repository, final ActionInputData command) {
         User user = repository.getUser(command.getUsername());
         int seasonNumber;
@@ -81,23 +102,18 @@ public final class Command {
             if (show.getKey().equals(command.getTitle())) {
                 for (Map.Entry<String, Integer> ratedShow : user.getRatedShows().entrySet()) {
                     if (ratedShow.getKey().equals(command.getTitle()) && ratedShow.getValue() == seasonNumber) {
-                        return "error -> " + command.getTitle() + " is already rated";
+                        return "error -> " + command.getTitle() + " has been already rated";
                     }
                 }
                 Map<String, Integer> ratedList = user.getRatedShows();
                 ratedList.put(command.getTitle(), seasonNumber);
-                user.setRatedShows(ratedList);
                 if (seasonNumber != 0) {
                     List<Serial> serialList = repository.getSerialList();
                     for (Serial serial : serialList) {
                         if (command.getTitle().equals(serial.getTitle())) {
-                            ArrayList<Season> seasonList = serial.getSeasons();
                             Season season = serial.getSeasons().get(seasonNumber - 1);
                             List<Double> seasonRatings = season.getRatings();
                             seasonRatings.add(command.getGrade());
-                            season.setRatings(seasonRatings);
-                            seasonList.set(seasonNumber - 1, season);
-                            serial.setSeasons(seasonList);
                         }
                     }
                 } else {
@@ -106,7 +122,6 @@ public final class Command {
                         if (command.getTitle().equals(movie.getTitle())) {
                             ArrayList<Double> ratingsList= movie.getRatings();
                             ratingsList.add(command.getGrade());
-                            movie.setRatings(ratingsList);
                         }
                     }
                 }
@@ -115,9 +130,5 @@ public final class Command {
             }
         }
         return "error -> " + command.getTitle() + " is not seen";
-    }
-
-    private Command() {
-
     }
 }

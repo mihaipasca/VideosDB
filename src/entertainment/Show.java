@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public abstract class Show {
     private String title;
-    private int year;
+    private Integer year;
     private ArrayList<String> cast;
     private ArrayList<String> genres;
 
@@ -17,6 +17,10 @@ public abstract class Show {
         genres = showInput.getGenres();
     }
 
+    public abstract int getDuration();
+
+    public abstract Double getRating();
+
     public String getTitle() {
         return title;
     }
@@ -25,7 +29,7 @@ public abstract class Show {
         this.title = title;
     }
 
-    public int getYear() {
+    public Integer getYear() {
         return year;
     }
 

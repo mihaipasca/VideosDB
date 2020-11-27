@@ -3,6 +3,7 @@ package process;
 import actions.Command;
 import actions.Query;
 import actions.Recommendation;
+import common.Constants;
 import fileio.ActionInputData;
 import fileio.Input;
 import fileio.Writer;
@@ -15,16 +16,16 @@ public class ProcessInput {
 
     public static JSONArray process(Input input, Writer fileWriter) throws IOException {
         Repo repository = new Repo(input);
-        String result = "";
+        String result;
         JSONArray resultArray = new JSONArray();
         int count = 1;
         for (ActionInputData action : input.getCommands()) {
             switch (action.getActionType()) {
-                case "command" -> result = Command.execute(repository, action);
-                case "query" -> result = Query.execute(action);
-                case "recommendation" -> result = Recommendation.execute(action);
+                case Constants.COMMAND -> result = Command.execute(repository, action);
+                case Constants.QUERY -> result = Query.execute(repository, action);
+                case Constants.RECOMMENDATION -> result = Recommendation.execute(repository, action);
+                default -> result = "error -> Wrong action";
             }
-            // System.out.println("xd1");
             resultArray.add(fileWriter.writeFile(count, "", result));
             count++;
         }

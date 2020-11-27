@@ -14,6 +14,17 @@ public class Movie extends Show{
         ratings = new ArrayList<>();
     }
 
+    public Double getRating(){
+        Double ratingSum = 0.0;
+        if (ratings.isEmpty()) {
+            return null;
+        }
+        for(Double number : ratings) {
+            ratingSum += number;
+        }
+        return ratingSum / ratings.size();
+    }
+
     public int getDuration() {
         return duration;
     }

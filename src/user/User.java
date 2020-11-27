@@ -9,22 +9,24 @@ public class User {
     private String subscriptionType;
     private Map<String, Integer> history;
     private ArrayList<String> favoriteMovies;
-    private Map<String, Integer> ratedMovies;
+    private Map<String, Integer> ratedShows;
 
     public User(final UserInputData userInput) {
         username = userInput.getUsername();
         subscriptionType = userInput.getSubscriptionType();
         history = userInput.getHistory();
         favoriteMovies = userInput.getFavoriteMovies();
-        ratedMovies = new HashMap<>();
+        ratedShows = new HashMap<>();
     }
+
+
 
     public Map<String, Integer> getRatedShows() {
-        return ratedMovies;
+        return ratedShows;
     }
 
-    public void setRatedShows(final Map<String, Integer> ratedMovies) {
-        this.ratedMovies = ratedMovies;
+    public void setRatedShows(final Map<String, Integer> ratedShows) {
+        this.ratedShows = ratedShows;
     }
 
     public String getUsername() {
