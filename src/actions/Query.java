@@ -39,7 +39,8 @@ public final class Query {
                 break;
             case Constants.SHOWS:
             case Constants.MOVIES:
-                List<Show> filteredShows = SortUtils.filterShows(repository, query);
+                List<Show> filteredShows = SortUtils.filterShows(repository, query.getObjectType(),
+                        query.getFilters().get(0).get(0), query.getFilters().get(1));
                 switch (query.getCriteria()) {
                     case Constants.RATINGS -> result = showRating(filteredShows, query);
                     case Constants.FAVORITE -> result = showFavorite(repository, filteredShows, query);
@@ -115,7 +116,7 @@ public final class Query {
         for (Actor actor : actorList) {
             boolean hasKeywords = true;
             for (String word : query.getFilters().get(2)) {
-                String patternString = " " + word + " ";
+                String patternString = "[ -]" + word + "[ ,.]";
                 Pattern pattern = Pattern.compile(patternString, Pattern.CASE_INSENSITIVE);
                 Matcher matcher = pattern.matcher(actor.getCareerDescription());
                 boolean matchFound = matcher.find();

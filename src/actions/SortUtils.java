@@ -1,15 +1,11 @@
 package actions;
 
 import common.Constants;
-import entertainment.Movie;
-import entertainment.Serial;
 import entertainment.Show;
-import fileio.ActionInputData;
 import repository.Repo;
-import utils.Utils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +33,8 @@ public class SortUtils {
                     return Double.compare(item1.getValue(), item2.getValue());
                 }
             });
-        } else {
+        }
+        if (order.equals("desc")) {
             itemEntries.sort((item1, item2) -> {
                 if (item1.getValue().equals(item2.getValue())) {
                     return item2.getKey().compareTo(item1.getKey());
@@ -46,8 +43,11 @@ public class SortUtils {
                 }
             });
         }
+        if (order.equals("desc/name")) {
+            itemEntries.sort((item1, item2) -> Double.compare(item2.getValue(), item1.getValue()));
+        }
         for (Map.Entry<String, Double> entry : itemEntries) {
-            if (result.size() == number) {
+            if (number != null && result.size() == number) {
                 break;
             }
             result.add(entry.getKey());
@@ -55,15 +55,14 @@ public class SortUtils {
         return result;
     }
 
-    public static List<Show> filterShows(Repo repository, ActionInputData query){
+    public static List<Show> filterShows(Repo repository, String objectType, String year, List<String> genres){
         List<Show> showList = new ArrayList<>();
         List<Show> filteredShowList = new ArrayList<>();
-        switch (query.getObjectType()) {
+        switch (objectType) {
             case Constants.SHOWS -> showList.addAll(repository.getSerialList());
             case Constants.MOVIES -> showList.addAll(repository.getMovieList());
+            case Constants.ALL -> showList.addAll(repository.getShowList());
         }
-        String year = query.getFilters().get(0).get(0);
-        List<String> genres= query.getFilters().get(1);
         for(Show show : showList) {
             boolean itsOk = true;
             if (year != null && !year.equals(show.getYear().toString())) {

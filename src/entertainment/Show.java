@@ -52,4 +52,11 @@ public abstract class Show {
     public void setGenres(ArrayList<String> genres) {
         this.genres = genres;
     }
+
+    @Override
+    public String toString() {
+        return "Show{" +
+                "title='" + title + '\'' +
+                '}';
+    }
 }
