@@ -5,26 +5,44 @@ import entertainment.Show;
 import fileio.ActionInputData;
 import repository.Repo;
 import user.User;
+import utils.ActionsUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Recommendation {
+public final class Recommendation {
 
-    public static String execute(Repo repository, ActionInputData recommendation) {
-        String result = switch (recommendation.getType()) {
+    public Recommendation() {
+    }
+
+    /**
+     * Method that interprets the recommendation and calls the helper
+     * method for the recommendation type
+     * @param repository with the input command
+     * @param recommendation parameters of the recommendation
+     * @return String with the result
+     */
+    public String execute(final Repo repository, final ActionInputData recommendation) {
+        return switch (recommendation.getType()) {
             case Constants.FAVORITE -> favorite(repository, recommendation);
             case Constants.STANDARD -> standard(repository, recommendation);
             case Constants.POPULAR -> popular(repository, recommendation);
             case Constants.SEARCH -> search(repository, recommendation);
-            case Constants.BEST_UNSEEN -> best_unseen(repository, recommendation);
+            case Constants.BEST_UNSEEN -> bestUnseen(repository, recommendation);
             default -> "error -> invalid query";
         };
-        return result;
     }
-    public static String standard(Repo repository, ActionInputData recommendation) {
-        List<Show> showList = repository.getShowList();
+
+    /**
+     * Method that finds the first not viewed show by a user in the database
+     * @param repository with the input command
+     * @param recommendation parameters of the recommendation
+     * @return String with the result
+     */
+    private String standard(final Repo repository, final ActionInputData recommendation) {
         User user = repository.getUser(recommendation.getUsername());
+        assert user != null;
+        List<Show> showList = repository.getShowList();
         for (Show show : showList) {
             if (!user.getHistory().containsKey(show.getTitle())) {
                 return "StandardRecommendation result: " + show.getTitle();
@@ -32,12 +50,21 @@ public class Recommendation {
         }
         return "StandardRecommendation cannot be applied!";
     }
-    public static String best_unseen(Repo repository, ActionInputData recommendation) {
+
+    /**
+     * Method that sorts the list of shows by their rating and finds the
+     * the best rated one that is not seen by a user
+     * @param repository with the input command
+     * @param recommendation parameters of the recommendation
+     * @return String with the result
+     */
+    private String bestUnseen(final Repo repository, final ActionInputData recommendation) {
+        User user = repository.getUser(recommendation.getUsername());
+        assert user != null;
         List<Show> showList = repository.getShowList();
         List<Show> sortedShowList = showList.stream().filter(show -> show.getRating() != null)
-                .collect(Collectors.toList());
-        User user = repository.getUser(recommendation.getUsername());
-        sortedShowList.sort(Comparator.comparingDouble(Show::getRating).reversed());
+                .sorted(Comparator.comparingDouble(Show::getRating)
+                .reversed()).collect(Collectors.toList());
         List<Show> sorted2ShowList = showList.stream().filter(show -> show.getRating() == null)
                 .collect(Collectors.toList());
         sortedShowList.addAll(sorted2ShowList);
@@ -49,24 +76,36 @@ public class Recommendation {
         return "BestRatedUnseenRecommendation cannot be applied!";
 
     }
-    public static String popular(Repo repository, ActionInputData recommendation) {
-        ArrayList<String> result;
-        List<Show> showList = repository.getShowList();
-        List<User> userList = repository.getUserList();
-        Map<String, Double> genreMap= new HashMap<>();
-        Map<Show, Double> filteredShowMap= new HashMap<>();
+
+    /**
+     * Method that finds the show that was not seen by the user from the
+     * genre with the most views
+     * @param repository with the input command
+     * @param recommendation parameters of the recommendation
+     * @return String with the result
+     */
+    private String popular(final Repo repository, final ActionInputData recommendation) {
         User user = repository.getUser(recommendation.getUsername());
+        assert user != null;
         if (!user.getSubscriptionType().equals(Constants.PREMIUM)) {
             return "PopularRecommendation cannot be applied!";
         }
+        ArrayList<String> result;
+        List<Show> showList = repository.getShowList();
+        List<User> userList = repository.getUserList();
+        Map<String, Double> genreMap = new HashMap<>();
+        Map<Show, Double> filteredShowMap = new HashMap<>();
         for (Show show : showList) {
             int viewCount = 0;
+            // TODO change name
             for (User user1 : userList) {
-                if (user1.getHistory().containsKey(show.getTitle()))
+                if (user1.getHistory().containsKey(show.getTitle())) {
                     viewCount += user1.getHistory().get(show.getTitle());
+                }
             }
-            if (viewCount != 0)
+            if (viewCount != 0) {
                 filteredShowMap.put(show, (double) viewCount);
+            }
         }
         for (Map.Entry<Show, Double> show : filteredShowMap.entrySet()) {
             for (String genre : show.getKey().getGenres()) {
@@ -77,66 +116,76 @@ public class Recommendation {
                 }
             }
         }
-        result = SortUtils.sortMap(genreMap, "desc", null);
+        result = ActionsUtils.sortMap(genreMap, Constants.DESCENDANT, null);
         for (String genre : result) {
             for (Show show : showList) {
-                if (show.getGenres().contains(genre) &&
-                        !user.getHistory().containsKey(show.getTitle())) {
+                if (show.getGenres().contains(genre)
+                        && !user.getHistory().containsKey(show.getTitle())) {
                     return "PopularRecommendation result: " + show.getTitle();
                 }
             }
         }
         return "PopularRecommendation cannot be applied!";
     }
-    public static String search(Repo repository, ActionInputData recommendation) {
-        ArrayList<String> result;
+
+    /**
+     * Method that finds the best rated show from a specified genre
+     * that was not seen by the user
+     * @param repository with the input command
+     * @param recommendation parameters of the recommendation
+     * @return String with the result
+     */
+    private String search(final Repo repository, final ActionInputData recommendation) {
         User user = repository.getUser(recommendation.getUsername());
-        Map<String, Double> sortedShowList = new HashMap<>();
+        assert user != null;
         if (!user.getSubscriptionType().equals(Constants.PREMIUM)) {
             return "SearchRecommendation cannot be applied!";
         }
+        ArrayList<String> result;
+        Map<String, Double> sortedShowList = new HashMap<>();
         ArrayList<String> genreList = new ArrayList<>();
         genreList.add(recommendation.getGenre());
-        List<Show> filteredShowList = SortUtils.filterShows(repository, Constants.ALL, null,
+        List<Show> filteredShowList = ActionsUtils.filterShows(repository, Constants.ALL, null,
                 genreList);
         for (Show show : filteredShowList) {
             if (!user.getHistory().containsKey(show.getTitle())) {
-                if (show.getRating() == null)
+                if (show.getRating() == null) {
                     sortedShowList.put(show.getTitle(), 0.0);
-                else
+                } else {
                     sortedShowList.put(show.getTitle(), show.getRating());
+                }
             }
         }
-        result = SortUtils.sortMap(sortedShowList,  "asc", null);
-        if (result.isEmpty())
+        result = ActionsUtils.sortMap(sortedShowList,  Constants.ASCENDANT, null);
+        if (result.isEmpty()) {
             return "SearchRecommendation cannot be applied!";
+        }
         return "SearchRecommendation result: " + result;
     }
-    public static String favorite(Repo repository, ActionInputData recommendation) {
+
+    /**
+     * Method that finds the show which is put in the favorite list the most and which
+     * is not seen by the user
+     * @param repository with the input command
+     * @param recommendation parameters of the recommendation
+     * @return String with the result
+     */
+    private String favorite(final Repo repository, final ActionInputData recommendation) {
         User user = repository.getUser(recommendation.getUsername());
+        assert user != null;
         if (!user.getSubscriptionType().equals(Constants.PREMIUM)) {
             return "FavoriteRecommendation cannot be applied!";
         }
         List<User> userList = repository.getUserList();
         List<Show> showList = repository.getShowList();
         Map<String, Double> filteredShowMap = new HashMap<>();
-        for (Show show : showList) {
-            int favoriteCount = 0;
-            for (User user1 : userList) {
-                if (user1.getFavoriteMovies().contains(show.getTitle()))
-                    favoriteCount++;
-            }
-            if (favoriteCount != 0) {
-                filteredShowMap.put(show.getTitle(), (double) favoriteCount);
-            }
-        }
-        ArrayList<String> result = SortUtils.sortMap(filteredShowMap, "desc/name", null);
+        ActionsUtils.getFavoriteMap(userList, showList, filteredShowMap);
+        ArrayList<String> result = ActionsUtils.sortMap(filteredShowMap, Constants.DESC_INPUT, null);
         for (String title : result) {
             if (!user.getHistory().containsKey(title)) {
                 return "FavoriteRecommendation result: " + title;
             }
         }
         return "FavoriteRecommendation cannot be applied!";
-
     }
 }

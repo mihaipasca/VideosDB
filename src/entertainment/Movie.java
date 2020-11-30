@@ -3,41 +3,45 @@ package entertainment;
 import fileio.MovieInputData;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class Movie extends Show{
-    private int duration;
-    private ArrayList<Double> ratings;
-    public Movie(MovieInputData movieInput) {
+public class Movie extends Show {
+    private final int duration;
+    private final ArrayList<Double> ratings;
+
+    public Movie(final MovieInputData movieInput) {
         super(movieInput);
         duration = movieInput.getDuration();
         ratings = new ArrayList<>();
     }
 
-    public Double getRating(){
+    /**
+     *
+     * @return todo
+     */
+    public Double getRating() {
         Double ratingSum = 0.0;
         if (ratings.isEmpty()) {
             return null;
         }
-        for(Double number : ratings) {
+        for (Double number : ratings) {
             ratingSum += number;
         }
         return ratingSum / ratings.size();
     }
 
+    /**
+     *
+     * @return todo
+     */
     public int getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
-
+    /**
+     *
+     * @return todo
+     */
     public ArrayList<Double> getRatings() {
         return ratings;
-    }
-
-    public void setRatings(ArrayList<Double> ratings) {
-        this.ratings = ratings;
     }
 }

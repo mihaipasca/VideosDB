@@ -11,14 +11,14 @@ import user.User;
 import entertainment.Movie;
 import entertainment.Serial;
 
-public class Repo {
-    private List<Actor> actorList = new ArrayList<>();
-    private List<User> userList = new ArrayList<>();
-    private List<Movie> movieList = new ArrayList<>();
-    private List<Serial> serialList = new ArrayList<>();
-    private List<Show> showList = new ArrayList<>();
+public final class Repo {
+    private final List<Actor> actorList = new ArrayList<>();
+    private final List<User> userList = new ArrayList<>();
+    private final List<Movie> movieList = new ArrayList<>();
+    private final List<Serial> serialList = new ArrayList<>();
+    private final List<Show> showList = new ArrayList<>();
 
-    public Repo(Input input) {
+    public Repo(final Input input) {
         for (ActorInputData actorInput : input.getActors()) {
             Actor actor = new Actor(actorInput);
             actorList.add(actor);
@@ -39,17 +39,11 @@ public class Repo {
         showList.addAll(serialList);
     }
 
-    public Actor getActor(final String name) {
-//        Actor actor ;
-//        for (Actor actor : actorList) {
-//            if (name.equals(actor.get())) {
-//                return user;
-//            }
-//        }
-//        return actor;
-        return null;
-    }
-
+    /**
+     * Method that finds a user in the repository by the username
+     * @param username of the user to find in the repository
+     * @return User
+     */
     public User getUser(final String username) {
         for (User user : userList) {
             if (username.equals(user.getUsername())) {
@@ -58,6 +52,11 @@ public class Repo {
         }
         return null;
     }
+    /**
+     * Method that finds a show in the repository by the title
+     * @param title of the show to find in the repository
+     * @return Show
+     */
     public Show getShow(final String title) {
         for (Show show : showList) {
             if (title.equals(show.getTitle())) {
@@ -67,32 +66,16 @@ public class Repo {
         return null;
     }
 
-    public void setUserList(final List<User> userList) {
-        this.userList = userList;
-    }
-
     public List<Movie> getMovieList() {
         return movieList;
-    }
-
-    public void setMovieList(final List<Movie> movieList) {
-        this.movieList = movieList;
     }
 
     public List<Serial> getSerialList() {
         return serialList;
     }
 
-    public void setSerialList(final List<Serial> serialList) {
-        this.serialList = serialList;
-    }
-
     public List<Actor> getActorList() {
         return actorList;
-    }
-
-    public void setActorList(List<Actor> actorList) {
-        this.actorList = actorList;
     }
 
     public List<User> getUserList() {
@@ -101,9 +84,5 @@ public class Repo {
 
     public List<Show> getShowList() {
         return showList;
-    }
-
-    public void setShowList(List<Show> showList) {
-        this.showList = showList;
     }
 }

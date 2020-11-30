@@ -70,11 +70,8 @@ public final class Main {
 
         Writer fileWriter = new Writer(filePath2);
         JSONArray arrayResult;
-
         //TODO add here the entry point to your implementation
-        // Repo repository = new Repo(input);
         arrayResult = ProcessInput.process(input, fileWriter);
-        // System.out.println(arrayResult);
         fileWriter.closeJSON(arrayResult);
     }
 }

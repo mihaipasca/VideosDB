@@ -4,21 +4,29 @@ import fileio.SerialInputData;
 
 import java.util.ArrayList;
 
-public class Serial extends Show{
-    private int numberOfSeasons;
-    private ArrayList<Season> seasons;
+public class Serial extends Show {
+    private final int numberOfSeasons;
+    private final ArrayList<Season> seasons;
 
-    public Serial(SerialInputData serialInput) {
+    /**
+     *
+     * @param serialInput todo
+     */
+    public Serial(final SerialInputData serialInput) {
         super(serialInput);
         numberOfSeasons = serialInput.getNumberSeason();
         seasons = serialInput.getSeasons();
     }
 
+    /**
+     *
+     * @return todo
+     */
     public Double getRating() {
         double totalRatingSum = 0.0;
         boolean rated = false;
         for (Season season : seasons) {
-            if (!season.getRatings().isEmpty()){
+            if (!season.getRatings().isEmpty()) {
                 rated = true;
             }
             double seasonRatingSum = 0.0;
@@ -27,12 +35,17 @@ public class Serial extends Show{
             }
             totalRatingSum += seasonRatingSum / numberOfSeasons;
         }
-        if (rated)
+        if (rated) {
             return totalRatingSum;
-        else
+        } else {
             return null;
+        }
     }
 
+    /**
+     *
+     * @return todo
+     */
     public int getDuration() {
         int duration = 0;
         for (Season season : seasons) {
@@ -41,19 +54,11 @@ public class Serial extends Show{
         return duration;
     }
 
-    public int getNumberOfSeasons() {
-        return numberOfSeasons;
-    }
-
-    public void setNumberOfSeasons(int numberOfSeasons) {
-        this.numberOfSeasons = numberOfSeasons;
-    }
-
+    /**
+     *
+     * @return todo
+     */
     public ArrayList<Season> getSeasons() {
         return seasons;
-    }
-
-    public void setSeasons(ArrayList<Season> seasons) {
-        this.seasons = seasons;
     }
 }

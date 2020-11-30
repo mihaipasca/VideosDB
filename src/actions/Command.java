@@ -16,28 +16,41 @@ import java.util.Map;
 public final class Command {
 
 
-    private Command() {
-
+    public Command() {
     }
 
     /**
      *
      * @param repository with the input data
-     * @param command to be executed
+     * @param command parameters of the command to be executed
      * @return String with the result of the command
      */
-    public static String execute(final Repo repository, final ActionInputData command) {
+    public String execute(final Repo repository, final ActionInputData command) {
         String result;
         switch (command.getType()) {
-            case Constants.FAVORITE -> result = favorite(repository, command);
-            case Constants.VIEW -> result = view(repository, command);
-            case Constants.RATING -> result = rating(repository, command);
-            default -> result = "error -> invalid command";
+            case Constants.FAVORITE:
+                result = favorite(repository, command);
+                break;
+            case Constants.VIEW:
+                result = view(repository, command);
+                break;
+            case Constants.RATING:
+                result = rating(repository, command);
+                break;
+            default:
+                result = "error -> invalid command";
+                break;
         }
         return result;
     }
 
-    private static String favorite(final Repo repository, final ActionInputData command) {
+    /**
+     *
+     * @param repository with the input data
+     * @param command parameters of the command to be executed
+     * @return String with the result of the favorite command
+     */
+    private String favorite(final Repo repository, final ActionInputData command) {
         User user = repository.getUser(command.getUsername());
         if (!user.getUsername().equals(command.getUsername())) {
             return "error -> " + user.getUsername() + " does not exist";
@@ -63,7 +76,7 @@ public final class Command {
      * @param command to be executed
      * @return String with the result of the view command
      */
-    private static String view(final Repo repository, final ActionInputData command) {
+    private String view(final Repo repository, final ActionInputData command) {
         int viewsNumber = 1;
         User user = repository.getUser(command.getUsername());
         if (!user.getUsername().equals(command.getUsername())) {
@@ -87,7 +100,7 @@ public final class Command {
      * @param command to be executed
      * @return String with the result of the rating command
      */
-    private static String rating(final Repo repository, final ActionInputData command) {
+    private String rating(final Repo repository, final ActionInputData command) {
         User user = repository.getUser(command.getUsername());
         int seasonNumber;
         if (command.getSeasonNumber() != 0) {
@@ -101,7 +114,8 @@ public final class Command {
         for (Map.Entry<String, Integer> show : user.getHistory().entrySet()) {
             if (show.getKey().equals(command.getTitle())) {
                 for (Map.Entry<String, Integer> ratedShow : user.getRatedShows().entrySet()) {
-                    if (ratedShow.getKey().equals(command.getTitle()) && ratedShow.getValue() == seasonNumber) {
+                    if (ratedShow.getKey().equals(command.getTitle())
+                            && ratedShow.getValue() == seasonNumber) {
                         return "error -> " + command.getTitle() + " has been already rated";
                     }
                 }
@@ -120,7 +134,7 @@ public final class Command {
                     List<Movie> movieList = repository.getMovieList();
                     for (Movie movie : movieList) {
                         if (command.getTitle().equals(movie.getTitle())) {
-                            ArrayList<Double> ratingsList= movie.getRatings();
+                            ArrayList<Double> ratingsList = movie.getRatings();
                             ratingsList.add(command.getGrade());
                         }
                     }
