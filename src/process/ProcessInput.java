@@ -13,7 +13,7 @@ import repository.Repo;
 import java.io.IOException;
 
 public final class ProcessInput {
-    private ProcessInput() {
+    public ProcessInput() {
     }
 
     /**
@@ -24,7 +24,7 @@ public final class ProcessInput {
      * @throws IOException in case of exceptions to writing
      */
     @SuppressWarnings("resultArray")
-    public static JSONArray process(final Input input, final Writer fileWriter) throws IOException {
+    public JSONArray process(final Input input, final Writer fileWriter) throws IOException {
         Repo repository = new Repo(input);
         String result;
         JSONArray resultArray = new JSONArray();

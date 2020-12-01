@@ -39,6 +39,7 @@ public final class Query {
                 };
             case Constants.SHOWS:
             case Constants.MOVIES:
+                // Filter
                 List<Show> filteredShows = ActionsUtils.filterShows(repository,
                         query.getObjectType(),
                         query.getFilters().get(Constants.YEAR_FIELD).get(Constants.YEAR_FIELD),
@@ -171,6 +172,7 @@ public final class Query {
                 filteredShowMap.put(show.getTitle(), show.getRating());
             }
         }
+        // Sort
         result = ActionsUtils.sortMap(filteredShowMap, query.getSortType(), query.getNumber());
         return "Query result: " + result;
     }
@@ -188,6 +190,7 @@ public final class Query {
         Map<String, Double> filteredShowMap;
         ArrayList<String> result;
         filteredShowMap = ActionsUtils.getFavoriteMap(userList, showList);
+        // Sort
         result = ActionsUtils.sortMap(filteredShowMap, query.getSortType(), query.getNumber());
         return "Query result: " + result;
     }
@@ -204,6 +207,7 @@ public final class Query {
         for (Show show : showList) {
             filteredShowMap.put(show.getTitle(), (double) show.getDuration());
         }
+        // Sort
         result = ActionsUtils.sortMap(filteredShowMap, query.getSortType(), query.getNumber());
         return "Query result: " + result;
     }

@@ -71,7 +71,8 @@ public final class Main {
         Writer fileWriter = new Writer(filePath2);
         JSONArray arrayResult;
 
-        arrayResult = ProcessInput.process(input, fileWriter);
+        ProcessInput processInput = new ProcessInput();
+        arrayResult = processInput.process(input, fileWriter);
 
         fileWriter.closeJSON(arrayResult);
     }
