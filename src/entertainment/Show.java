@@ -5,15 +5,23 @@ import fileio.ShowInput;
 import java.util.ArrayList;
 
 public abstract class Show {
+    /**
+     * Show's title
+     */
     private final String title;
+    /**
+     * The year the show was released
+     */
     private final Integer year;
+    /**
+     * Show casting
+     */
     private final ArrayList<String> cast;
+    /**
+     * Show genres
+     */
     private final ArrayList<String> genres;
 
-    /**
-     *
-     * @param showInput TODO
-     */
     public Show(final ShowInput showInput) {
         title = showInput.getTitle();
         year = showInput.getYear();
@@ -22,20 +30,20 @@ public abstract class Show {
     }
 
     /**
-     *
-     * @return todo
+     * Method that computes the duration of a show
+     * @return duration in minutes
      */
     public abstract int getDuration();
 
     /**
-     *
-     * @return todo
+     * Method that computes the average rating of a show
+     * @return Double
      */
     public abstract Double getRating();
 
     /**
      *
-     * @return TODO
+     * @return String
      */
     public String getTitle() {
         return title;
@@ -43,7 +51,7 @@ public abstract class Show {
 
     /**
      *
-     * @return todo
+     * @return String
      */
     public Integer getYear() {
         return year;
@@ -51,7 +59,7 @@ public abstract class Show {
 
     /**
      *
-     * @return TODO
+     * @return List of Strings with the names of cast
      */
     public ArrayList<String> getCast() {
         return cast;
@@ -59,18 +67,9 @@ public abstract class Show {
 
     /**
      *
-     * @return TODO
+     * @return List of Strings
      */
     public ArrayList<String> getGenres() {
         return genres;
-    }
-
-    /**
-     *
-     * @return todo
-     */
-    @Override
-    public String toString() {
-        return "Show{" + "title='" + title + '\'' + '}';
     }
 }

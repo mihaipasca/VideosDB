@@ -5,15 +5,23 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public final class Actor {
+    /**
+     * actor name
+     */
     private final String name;
+    /**
+     * description of the actor's career
+     */
     private final String careerDescription;
+    /**
+     * videos starring actor
+     */
     private final ArrayList<String> filmography;
+    /**
+     * awards won by the actor
+     */
     private final Map<ActorsAwards, Integer> awards;
 
-    /**
-     *
-     * @param actorInput TODO
-     */
     public Actor(final ActorInputData actorInput) {
         name = actorInput.getName();
         careerDescription = actorInput.getCareerDescription();
@@ -22,7 +30,7 @@ public final class Actor {
     }
 
     /**
-     *
+     * Method that computes the number of awards an actor has
      * @return int with the total number of awards
      */
     public int getAwardsNumber() {

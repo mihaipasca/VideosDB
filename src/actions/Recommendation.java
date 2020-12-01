@@ -7,7 +7,11 @@ import repository.Repo;
 import user.User;
 import utils.ActionsUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public final class Recommendation {
@@ -41,7 +45,9 @@ public final class Recommendation {
      */
     private String standard(final Repo repository, final ActionInputData recommendation) {
         User user = repository.getUser(recommendation.getUsername());
-        assert user != null;
+        if (user == null) {
+            return "error -> invalid user";
+        }
         List<Show> showList = repository.getShowList();
         for (Show show : showList) {
             if (!user.getHistory().containsKey(show.getTitle())) {
@@ -60,13 +66,15 @@ public final class Recommendation {
      */
     private String bestUnseen(final Repo repository, final ActionInputData recommendation) {
         User user = repository.getUser(recommendation.getUsername());
-        assert user != null;
+        if (user == null) {
+            return "error -> invalid user";
+        }
         List<Show> showList = repository.getShowList();
         List<Show> sortedShowList = showList.stream().filter(show -> show.getRating() != null)
-                .sorted(Comparator.comparingDouble(Show::getRating)
-                .reversed()).collect(Collectors.toList());
+                                            .sorted(Comparator.comparingDouble(Show::getRating)
+                                            .reversed()).collect(Collectors.toList());
         List<Show> sorted2ShowList = showList.stream().filter(show -> show.getRating() == null)
-                .collect(Collectors.toList());
+                                             .collect(Collectors.toList());
         sortedShowList.addAll(sorted2ShowList);
         for (Show show : sortedShowList) {
             if (!user.getHistory().containsKey(show.getTitle())) {
@@ -86,7 +94,9 @@ public final class Recommendation {
      */
     private String popular(final Repo repository, final ActionInputData recommendation) {
         User user = repository.getUser(recommendation.getUsername());
-        assert user != null;
+        if (user == null) {
+            return "error -> invalid user";
+        }
         if (!user.getSubscriptionType().equals(Constants.PREMIUM)) {
             return "PopularRecommendation cannot be applied!";
         }
@@ -97,10 +107,9 @@ public final class Recommendation {
         Map<Show, Double> filteredShowMap = new HashMap<>();
         for (Show show : showList) {
             int viewCount = 0;
-            // TODO change name
-            for (User user1 : userList) {
-                if (user1.getHistory().containsKey(show.getTitle())) {
-                    viewCount += user1.getHistory().get(show.getTitle());
+            for (User databaseUser: userList) {
+                if (databaseUser.getHistory().containsKey(show.getTitle())) {
+                    viewCount += databaseUser.getHistory().get(show.getTitle());
                 }
             }
             if (viewCount != 0) {
@@ -137,7 +146,9 @@ public final class Recommendation {
      */
     private String search(final Repo repository, final ActionInputData recommendation) {
         User user = repository.getUser(recommendation.getUsername());
-        assert user != null;
+        if (user == null) {
+            return "error -> invalid user";
+        }
         if (!user.getSubscriptionType().equals(Constants.PREMIUM)) {
             return "SearchRecommendation cannot be applied!";
         }
@@ -147,6 +158,9 @@ public final class Recommendation {
         genreList.add(recommendation.getGenre());
         List<Show> filteredShowList = ActionsUtils.filterShows(repository, Constants.ALL, null,
                 genreList);
+        if (filteredShowList == null) {
+            return "SearchRecommendation cannot be applied!";
+        }
         for (Show show : filteredShowList) {
             if (!user.getHistory().containsKey(show.getTitle())) {
                 if (show.getRating() == null) {
@@ -172,15 +186,18 @@ public final class Recommendation {
      */
     private String favorite(final Repo repository, final ActionInputData recommendation) {
         User user = repository.getUser(recommendation.getUsername());
-        assert user != null;
+        if (user == null) {
+            return "error -> invalid user";
+        }
         if (!user.getSubscriptionType().equals(Constants.PREMIUM)) {
             return "FavoriteRecommendation cannot be applied!";
         }
         List<User> userList = repository.getUserList();
         List<Show> showList = repository.getShowList();
-        Map<String, Double> filteredShowMap = new HashMap<>();
-        ActionsUtils.getFavoriteMap(userList, showList, filteredShowMap);
-        ArrayList<String> result = ActionsUtils.sortMap(filteredShowMap, Constants.DESC_INPUT, null);
+        Map<String, Double> filteredShowMap;
+        filteredShowMap = ActionsUtils.getFavoriteMap(userList, showList);
+        ArrayList<String> result = ActionsUtils.sortMap(filteredShowMap,
+                Constants.DESC_INPUT, null);
         for (String title : result) {
             if (!user.getHistory().containsKey(title)) {
                 return "FavoriteRecommendation result: " + title;

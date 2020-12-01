@@ -4,14 +4,16 @@ import fileio.SerialInputData;
 
 import java.util.ArrayList;
 
-public class Serial extends Show {
+public final class Serial extends Show {
+    /**
+     * Number of seasons
+     */
     private final int numberOfSeasons;
+    /**
+     * Season list
+     */
     private final ArrayList<Season> seasons;
 
-    /**
-     *
-     * @param serialInput todo
-     */
     public Serial(final SerialInputData serialInput) {
         super(serialInput);
         numberOfSeasons = serialInput.getNumberSeason();
@@ -19,8 +21,8 @@ public class Serial extends Show {
     }
 
     /**
-     *
-     * @return todo
+     * Method that computes the average rating of the serial
+     * @return Double
      */
     public Double getRating() {
         double totalRatingSum = 0.0;
@@ -43,8 +45,8 @@ public class Serial extends Show {
     }
 
     /**
-     *
-     * @return todo
+     * Method that computes the duration of the show
+     * @return int
      */
     public int getDuration() {
         int duration = 0;
@@ -54,10 +56,6 @@ public class Serial extends Show {
         return duration;
     }
 
-    /**
-     *
-     * @return todo
-     */
     public ArrayList<Season> getSeasons() {
         return seasons;
     }

@@ -5,17 +5,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 import entertainment.Show;
-import fileio.*;
 import actor.Actor;
+import fileio.ActorInputData;
+import fileio.Input;
+import fileio.MovieInputData;
+import fileio.SerialInputData;
+import fileio.UserInputData;
 import user.User;
 import entertainment.Movie;
 import entertainment.Serial;
 
 public final class Repo {
+    /**
+     * List of actors
+     */
     private final List<Actor> actorList = new ArrayList<>();
+    /**
+     * List of users
+     */
     private final List<User> userList = new ArrayList<>();
+    /**
+     * List of movies
+     */
     private final List<Movie> movieList = new ArrayList<>();
+    /**
+     * List of serials
+     */
     private final List<Serial> serialList = new ArrayList<>();
+    /**
+     * List of shows
+     */
     private final List<Show> showList = new ArrayList<>();
 
     public Repo(final Input input) {

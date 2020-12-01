@@ -4,8 +4,14 @@ import fileio.MovieInputData;
 
 import java.util.ArrayList;
 
-public class Movie extends Show {
+public final class Movie extends Show {
+    /**
+     * Duration in minutes of a season
+     */
     private final int duration;
+    /**
+     * Ratings of the movie
+     */
     private final ArrayList<Double> ratings;
 
     public Movie(final MovieInputData movieInput) {
@@ -15,8 +21,8 @@ public class Movie extends Show {
     }
 
     /**
-     *
-     * @return todo
+     * Method that computes the average rating of a movie
+     * @return Double
      */
     public Double getRating() {
         Double ratingSum = 0.0;
@@ -30,17 +36,13 @@ public class Movie extends Show {
     }
 
     /**
-     *
-     * @return todo
+     * Method that returns the duration of a movie
+     * @return duration in minutes
      */
     public int getDuration() {
         return duration;
     }
 
-    /**
-     *
-     * @return todo
-     */
     public ArrayList<Double> getRatings() {
         return ratings;
     }

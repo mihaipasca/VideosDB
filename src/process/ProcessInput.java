@@ -13,20 +13,17 @@ import repository.Repo;
 import java.io.IOException;
 
 public final class ProcessInput {
-    /**
-     * for coding style
-     */
     private ProcessInput() {
-
     }
 
     /**
-     *
-     * @param input TODO
-     * @param fileWriter TODO
-     * @return result
-     * @throws IOException TODO
+     * Method that initialises the repository and calls the action methods
+     * @param input data
+     * @param fileWriter for writing the JSONArray
+     * @return JSONArray with the result of the executed actions
+     * @throws IOException in case of exceptions to writing
      */
+    @SuppressWarnings("resultArray")
     public static JSONArray process(final Input input, final Writer fileWriter) throws IOException {
         Repo repository = new Repo(input);
         String result;

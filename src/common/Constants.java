@@ -91,4 +91,8 @@ public final class Constants {
     public static final String PREMIUM = "PREMIUM";
     public static final String ALL = "all";
     public static final String DESC_INPUT = "desc_input";
+    public static final int YEAR_FIELD = 0;
+    public static final int GENRE_FIELD = 1;
+    public static final int WORDS_FIELD = 2;
+    public static final int AWARDS_FIELD = 3;
 }

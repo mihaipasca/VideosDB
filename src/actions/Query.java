@@ -9,7 +9,10 @@ import user.User;
 import utils.ActionsUtils;
 import utils.Utils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,7 +41,11 @@ public final class Query {
             case Constants.MOVIES:
                 List<Show> filteredShows = ActionsUtils.filterShows(repository,
                         query.getObjectType(),
-                        query.getFilters().get(0).get(0), query.getFilters().get(1));
+                        query.getFilters().get(Constants.YEAR_FIELD).get(Constants.YEAR_FIELD),
+                        query.getFilters().get(Constants.GENRE_FIELD));
+                if (filteredShows == null) {
+                    return "QueryResult: []";
+                }
                 return switch (query.getCriteria()) {
                     case Constants.RATINGS -> showRating(filteredShows, query);
                     case Constants.FAVORITE -> showFavorite(repository, filteredShows, query);
@@ -71,7 +78,7 @@ public final class Query {
         // Filter
         for (Actor actor : actorList) {
             boolean hasAwards = true;
-            for (String award : query.getFilters().get(3)) {
+            for (String award : query.getFilters().get(Constants.AWARDS_FIELD)) {
                 if (actor.getAwards().get(Utils.stringToAwards(award)) == null) {
                     hasAwards = false;
                     break;
@@ -132,7 +139,7 @@ public final class Query {
         // Filter
         for (Actor actor : actorList) {
             boolean hasKeywords = true;
-            for (String word : query.getFilters().get(2)) {
+            for (String word : query.getFilters().get(Constants.WORDS_FIELD)) {
                 String patternString = "[ -]" + word + "[ ,.]";
                 Pattern pattern = Pattern.compile(patternString, Pattern.CASE_INSENSITIVE);
                 Matcher matcher = pattern.matcher(actor.getCareerDescription());
@@ -178,9 +185,9 @@ public final class Query {
     private String showFavorite(final Repo repository, final List<Show> showList,
                                       final ActionInputData query) {
         List<User> userList = repository.getUserList();
-        Map<String, Double> filteredShowMap = new HashMap<>();
+        Map<String, Double> filteredShowMap;
         ArrayList<String> result;
-        ActionsUtils.getFavoriteMap(userList, showList, filteredShowMap);
+        filteredShowMap = ActionsUtils.getFavoriteMap(userList, showList);
         result = ActionsUtils.sortMap(filteredShowMap, query.getSortType(), query.getNumber());
         return "Query result: " + result;
     }

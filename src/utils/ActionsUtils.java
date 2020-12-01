@@ -6,13 +6,12 @@ import repository.Repo;
 import user.User;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public final class ActionsUtils {
-    /**
-     * for coding style
-     */
+
     private ActionsUtils() {
     }
 
@@ -74,7 +73,9 @@ public final class ActionsUtils {
             case Constants.SHOWS -> showList.addAll(repository.getSerialList());
             case Constants.MOVIES -> showList.addAll(repository.getMovieList());
             case Constants.ALL -> showList.addAll(repository.getShowList());
-            // default
+            default -> {
+                return null;
+            }
         }
         for (Show show : showList) {
             boolean itsOk = true;
@@ -95,12 +96,15 @@ public final class ActionsUtils {
     }
 
     /**
-     * TODO
-     * @param userList
-     * @param showList
-     * @param filteredShowMap
+     * Method that creates a map with shows as keys and number of times
+     * they are added in the favorite lists of users as value
+     * @param userList from repository
+     * @param showList from repository
+     * @return Map<String, Double>
      */
-    public static void getFavoriteMap(final List<User> userList, final List<Show> showList, Map<String, Double> filteredShowMap) {
+    public static Map<String, Double> getFavoriteMap(final List<User> userList,
+                                                     final List<Show> showList) {
+        Map<String, Double> favoriteMap = new HashMap<>();
         for (Show show : showList) {
             int favoriteCount = 0;
             for (User user : userList) {
@@ -109,8 +113,9 @@ public final class ActionsUtils {
                 }
             }
             if (favoriteCount != 0) {
-                filteredShowMap.put(show.getTitle(), (double) favoriteCount);
+                favoriteMap.put(show.getTitle(), (double) favoriteCount);
             }
         }
+        return favoriteMap;
     }
 }
