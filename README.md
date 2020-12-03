@@ -1,5 +1,7 @@
 # VideosDB
 
+Pasca Mihai Alexandru - 321CA
+
 Github Repository: https://github.com/Alexmihax/VideosDB
 
 The implementation starts with the instantiation of a ProcessInput object which
