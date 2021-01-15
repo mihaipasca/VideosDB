@@ -2,8 +2,6 @@
 
 Pasca Mihai Alexandru - 321CA
 
-Github Repository: https://github.com/Alexmihax/VideosDB
-
 The implementation starts with the instantiation of a ProcessInput object which
 then processes the input data sent through an Input object. In the process 
 method the input data will be stored through the instantiation of a Repo object
